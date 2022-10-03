@@ -54,6 +54,8 @@ const (
 // In particular, you can mix and match SideBySide, VerticalStack, Sized and View objects to build a strcutured layout.
 // See https://flexivis.infrastruktur.link/#layout for an indication of how these can be combined.
 type StructuredLayout interface {
+	OccupyingPercentage(uint8) Sized
+
 	layoutAndEmbeddedViews() (Layout, outerLayoutStructure, []View)
 }
 
@@ -76,6 +78,7 @@ func URL(structuredLayout StructuredLayout) string {
 // See https://flexivis.infrastruktur.link/#layout.
 type SideBySide []StructuredLayout
 
+func (s SideBySide) OccupyingPercentage(percentage uint8) Sized { return Sized{s, percentage} }
 func (s SideBySide) layoutAndEmbeddedViews() (Layout, outerLayoutStructure, []View) {
 	return joinLayoutsAndEmbeddedViews('/', s)
 }
@@ -84,6 +87,7 @@ func (s SideBySide) layoutAndEmbeddedViews() (Layout, outerLayoutStructure, []Vi
 // See https://flexivis.infrastruktur.link/#layout.
 type VerticalStack []StructuredLayout
 
+func (s VerticalStack) OccupyingPercentage(percentage uint8) Sized { return Sized{s, percentage} }
 func (s VerticalStack) layoutAndEmbeddedViews() (Layout, outerLayoutStructure, []View) {
 	return joinLayoutsAndEmbeddedViews('-', s)
 }
@@ -96,6 +100,7 @@ type Sized struct {
 	Percentage  uint8
 }
 
+func (s Sized) OccupyingPercentage(percentage uint8) Sized { return Sized{s.InnerLayout, percentage} }
 func (s Sized) layoutAndEmbeddedViews() (Layout, outerLayoutStructure, []View) {
 	atomic, embedded := ensureOuterStructureAtMost(atomic, s.InnerLayout)
 	return Layout(fmt.Sprintf("%s%v", atomic, s.Percentage)), scaled, embedded
@@ -105,7 +110,8 @@ func (s Sized) layoutAndEmbeddedViews() (Layout, outerLayoutStructure, []View) {
 type ViewName string
 
 // AsLayout converts this view name to a layout. (A single view name is a valid layout).
-func (n ViewName) AsLayout() Layout { return Layout(n) }
+func (n ViewName) AsLayout() Layout                           { return Layout(n) }
+func (n ViewName) OccupyingPercentage(percentage uint8) Sized { return Sized{n, percentage} }
 func (n ViewName) layoutAndEmbeddedViews() (Layout, outerLayoutStructure, []View) {
 	return n.AsLayout(), atomic, nil
 }
@@ -131,6 +137,7 @@ type View struct {
 	Resource Resource
 }
 
+func (v View) OccupyingPercentage(percentage uint8) Sized { return Sized{v, percentage} }
 func (v View) layoutAndEmbeddedViews() (Layout, outerLayoutStructure, []View) {
 	return v.Name.AsLayout(), atomic, []View{v}
 }

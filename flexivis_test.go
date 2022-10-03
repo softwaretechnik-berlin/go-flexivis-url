@@ -16,7 +16,7 @@ func TestIntroductionExample(t *testing.T) {
 	assert.Equal(t, expectedURL, flexivis.URL(
 		flexivis.SideBySide{
 			flexivis.VerticalStack{
-				flexivis.Sized{flexivis.Markdown("explanation", "https://raw.githubusercontent.com/programmiersportgruppe/flexivis/master/docs/samples/berlin-walk.md"), 30},
+				flexivis.Markdown("explanation", "https://raw.githubusercontent.com/programmiersportgruppe/flexivis/master/docs/samples/berlin-walk.md").OccupyingPercentage(30),
 				flexivis.Map("map", "https://raw.githubusercontent.com/programmiersportgruppe/flexivis/master/docs/samples/berlin-walk.json"),
 			},
 			flexivis.JSON("source", "https://raw.githubusercontent.com/programmiersportgruppe/flexivis/master/docs/samples/berlin-walk.json"),
@@ -104,7 +104,7 @@ func TestVegaExamples(t *testing.T) {
 		flexivis.SideBySide{
 			flexivis.VerticalStack{
 				flexivis.Vega("a", "https://raw.githubusercontent.com/programmiersportgruppe/flexivis/master/docs/samples/cloc.json"),
-				flexivis.Sized{flexivis.Text("c", "https://raw.githubusercontent.com/programmiersportgruppe/flexivis/master/docs/samples/cloc.csv"), 30},
+				flexivis.Text("c", "https://raw.githubusercontent.com/programmiersportgruppe/flexivis/master/docs/samples/cloc.csv").OccupyingPercentage(30),
 			},
 			flexivis.Text("b", "https://raw.githubusercontent.com/programmiersportgruppe/flexivis/master/docs/samples/cloc.json"),
 		},
