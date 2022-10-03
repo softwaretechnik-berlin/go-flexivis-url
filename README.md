@@ -6,7 +6,7 @@ It's very handy to use in tests writen in Go to generate rich output when a test
 
 You can get it like this:
 ```bash
-go get go-flexivis-url
+github.com/softwaretechnik-berlin/go-flexivis-url
 ```
 
 And use it like this:
